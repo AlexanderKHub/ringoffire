@@ -15,6 +15,12 @@ import { DialogAddPlayerComponent } from './dialog-add-player/dialog-add-player.
 import {MatCardModule} from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { GameGuideComponent } from './game-guide/game-guide.component';
+import { initializeApp,provideFirebaseApp, getApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { provideDatabase,getDatabase } from '@angular/fire/database';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+
 
 
 
@@ -36,7 +42,11 @@ import { GameGuideComponent } from './game-guide/game-guide.component';
     MatDialogModule,
     MatInputModule,
     FormsModule,
-    MatCardModule
+    MatCardModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideDatabase(() => getDatabase()),
+    provideFirestore(() => getFirestore())
   ],
   providers: [],
   bootstrap: [AppComponent]
