@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { collection, doc, Firestore, setDoc } from '@angular/fire/firestore';
+import { addDoc, collection, doc, Firestore, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Game } from '../models/game';
 
@@ -16,16 +16,18 @@ export class StartscreenComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  newGame(){
+ async newGame(){
     let game = new Game();
-
+  /*
     //get collection 'games' from firestore
     const coll = collection(this.firestore, 'games');
-    setDoc(doc(coll),(game.toJson()))
-    .then((gameinfo:any) => {
-      console.log('gameinfo ist' , gameinfo);
-      //route to gameid
-      this.router.navigateByUrl('/game/' + gameinfo.id);
-    });
+    const docRef:any = await setDoc(doc(coll),(game.toJson()))
+      //this.router.navigateByUrl('/game/' + dbRef.id);
+      console.log(docRef);
+*/
+
+     const dbRef2:any = await addDoc(collection(this.firestore, 'games'), (game.toJson()));
+     console.log("Document2 written with ID: ", dbRef2.id);
+     this.router.navigateByUrl('/game/' + dbRef2.id);
   }
-}
+};

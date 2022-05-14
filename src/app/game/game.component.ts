@@ -6,6 +6,9 @@ import { Firestore, collectionData, collection, doc } from '@angular/fire/firest
 import { Observable } from 'rxjs';
 import { setDoc } from '@firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+
 
 
 @Component({
@@ -19,23 +22,31 @@ export class GameComponent implements OnInit {
   game: Game | any;
   currentCard:string = '';
   
-  constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: Firestore) {
-  }
-
+  constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: Firestore) {}
   
   ngOnInit(): void {
     this.newGame();
 
-    //logs the current url after /game/
-    this.route.params.subscribe((params)=>{
-      console.log(params['id']);
+     //logs the current url after /game/
+     this.route.params.subscribe((params)=>{
+      console.log('route.params sind', params['id']);
+
+    this.firestore
+      .collection('games')
+      .doc(params['id'])
+      .valueChanges()
+      .subscribe((game:any)=>{
+        console.log('game update', game);
+    })
     })
 
+  
     //subscribes to database games and logs them
     const coll = collection(this.firestore,'games');
     let gameInfo = collectionData(coll);
+    console.log('coll ist', coll);
     gameInfo.subscribe((gi) => {
-      console.log(gi);
+      console.log('current games in DB are', gi);
     })
   }
 
@@ -53,8 +64,7 @@ export class GameComponent implements OnInit {
       setTimeout(() => {
         this.pickCardAnimation = false;
         this.addToPlayedCards();
-      }, 2000);
-    
+      }, 2000); 
     }  
   }
 
