@@ -1,5 +1,5 @@
 <app-player class="player-layout" *ngFor="let player of game.players; let i = index" [ngStyle]="{'top.px': 100 + (i * 120)}" 
-    [name]="player" [playerActive]="i == game.currentPlayer">
+    [name]="player" [profileImage]="game.playerImages[i]" [playerActive]="i == game.currentPlayer" (click)="editUser(i)">
 </app-player>
 
 
@@ -15,17 +15,17 @@
         class="played-card" src="assets/img/cards/{{ card }}.png">
 
         <!-- drawing card animation -->
-        <img style="left: 15px;bottom: 15px" *ngIf="pickCardAnimation" class="pick-card"
-        src="assets/img/cards/{{ currentCard }}.png">
+        <img style="left: 15px;bottom: 15px" *ngIf="game.pickCardAnimation" class="pick-card"
+        src="assets/img/cards/{{ game.currentCard }}.png">
 
     </div>
 </div>
 
 
-<button mat-fab color="primary" class="btn-add" (click)="openDialog()">
+<button id="add-player-button" mat-fab color="primary" class="btn-add" (click)="openDialog()">
     <mat-icon>add</mat-icon>
 </button>
 
-<app-game-guide [card]="currentCard" class="game-helper">
+<app-game-guide [card]="game.currentCard" class="game-helper">
 
 </app-game-guide>

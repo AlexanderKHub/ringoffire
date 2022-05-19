@@ -7,8 +7,9 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PlayerComponent implements OnInit {
 
-  @Input()name: string[] = [];
-  @Input()playerActive:boolean = false;
+  @Input() name: string = '';
+  @Input() profileImage:any = 'blank-profile.png';
+  @Input() playerActive:boolean = false;
 
   constructor() { }
 

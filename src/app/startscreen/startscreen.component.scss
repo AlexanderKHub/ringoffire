@@ -1,0 +1,27 @@
+.startscreen{
+    height:100vh;
+    overflow-y:hidden;
+    width:100%;
+    max-width:100vw;
+    background-image: url('^assets/img/wood-background.jpeg');
+    img{
+        height:100vh;
+        width:100%;
+        object-fit:contain;
+    }
+}
+
+.start-game-label{
+    :hover{
+        filter: brightness(1.2);
+    }
+    img{
+        position:absolute;
+        left:0;
+        margin-left:auto;
+        right:0;
+        margin-right:auto;
+        bottom:20%;
+        width:30%;
+    }
+}

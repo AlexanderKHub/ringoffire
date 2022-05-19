@@ -41,9 +41,34 @@
 .game-helper{
     position:absolute;
     bottom:3%;
-    left:10%;
-    right:10%;
-    
+    left:3%;
+    right:3%;
+}
+
+.blinking-button{
+    animation: blinking-button 3s infinite;
+}
+
+app-player, .card-deck{
+    cursor:pointer;
+}
+
+@keyframes blinking-button{
+    0%{
+        filter:brightness(1);
+    }
+    25%{
+        filter:brightness(1.4);
+    }
+    50%{
+        filter:brightness(1.0);
+    }
+    75%{
+        filter:brightness(1.4);
+    }
+    100%{
+        filter:brightness(1.0);
+    }
 }
 
 

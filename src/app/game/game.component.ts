@@ -5,10 +5,11 @@ import { Game } from '../models/game';
 import { Firestore, collectionData, collection, doc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { setDoc } from '@firebase/firestore';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
 
 @Component({
@@ -17,80 +18,121 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
   styleUrls: ['./game.component.scss']
 }) 
 export class GameComponent implements OnInit {
-  
-  pickCardAnimation = false;
   game: Game | any;
-  currentCard:string = '';
+  gameid:string = '';
   
-  constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: Firestore) {}
+  constructor(private route: ActivatedRoute, public dialog: MatDialog, public firestore: AngularFirestore) {}
   
   ngOnInit(): void {
     this.newGame();
+    this.getGameFromFirestore();
+  }
 
-     //logs the current url after /game/
-     this.route.params.subscribe((params)=>{
-      console.log('route.params sind', params['id']);
+  getGameFromFirestore(){
+ 
+   //subscribes to game url
+    this.route.params.subscribe((params)=>{
+    this.gameid = params['id'];
 
+    //access to the right game which is stored in firebase
     this.firestore
-      .collection('games')
-      .doc(params['id'])
-      .valueChanges()
-      .subscribe((game:any)=>{
-        console.log('game update', game);
+    .collection('games')
+    .doc(this.gameid)
+    .valueChanges()
+    .subscribe((game:any)=>{
+    
+      console.log('game update', game);
+      //updates the webapp to be synchronized with the database
+      this.game.currentPlayer = game.currentPlayer;
+      this.game.players = game.players;
+      this.game.playerImages = game.playerImages;
+      this.game.stack = game.stack;
+      this.game.playedCards = game.playedCards;
+      this.game.pickCardAnimation = game.pickCardAnimation;
+      this.game.currentCard = game.currentCard;
     })
-    })
+  })
+}
 
-  
-    //subscribes to database games and logs them
-    const coll = collection(this.firestore,'games');
-    let gameInfo = collectionData(coll);
-    console.log('coll ist', coll);
-    gameInfo.subscribe((gi) => {
-      console.log('current games in DB are', gi);
-    })
-  }
-
-  newGame(){
-    this.game = new Game();
-  }
-
-  drawCard(){
-    if(this.gameExists() && this.noCardAnimation() && this.playersExist()){
-      
-      this.currentCard = this.game.stack.pop();
-      this.pickCardAnimation = true;
-      this.game.currentPlayer++;
-      this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
-      setTimeout(() => {
-        this.pickCardAnimation = false;
-        this.addToPlayedCards();
-      }, 2000); 
-    }  
+  editUser(playerID:number){
+    const dialogRef = this.dialog.open(EditPlayerComponent);
+    
+    dialogRef.afterClosed().subscribe(change => {
+      if(change == 'DELETE'){
+        this.game.players.splice(playerID, 1);
+        this.game.playerImages.splice(playerID,1);
+      }
+      else{
+        if(change){
+        this.game.playerImages[playerID] = change;
+        }
+      }
+      this.updateGameToDB();
+    });
+    
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe(name => {
-      if(name){
+      if(name && this.game.players.length < 5){
         this.game.players.push(name);
+        this.game.playerImages.push('blank-profile.png');
+        document.getElementById('add-player-button')?.classList.remove('blinking-button');
+        this.updateGameToDB();
       }
     });
   }
 
-  noCardAnimation(){
-    return !this.pickCardAnimation;
+
+  drawCard(){
+    if(this.gameExists() && this.noCardAnimation() && this.playersExist()){
+      
+      this.game.currentCard = this.game.stack.pop();
+      this.game.pickCardAnimation = true;
+      this.game.currentPlayer++;
+      this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
+      this.updateGameToDB();
+      setTimeout(() => {
+        this.game.pickCardAnimation = false;
+        this.addToPlayedCards();
+        this.updateGameToDB();
+      }, 2000); 
+    }  else{
+        document.getElementById('add-player-button')?.classList.add('blinking-button');
+    }
   }
+
+
+  updateGameToDB(){
+    this.firestore
+    .collection('games')
+    .doc(this.gameid)
+    .update(this.game.toJson());
+  }
+
+  newGame(){
+    this.game = new Game();
+  }
+
+
+  noCardAnimation(){
+    return !this.game.pickCardAnimation;
+  }
+
 
   gameExists(){
     return this.game;
   }
 
+
   playersExist(){
     return this.game.players.length > 0;
   }
 
+
   addToPlayedCards(){
-    this.game.playedCards.push(this.currentCard);
+    this.game.playedCards.push(this.game.currentCard);
   }
 }
