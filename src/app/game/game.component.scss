@@ -29,7 +29,7 @@
 
 .player-layout{
     position:absolute;
-    right:0;
+    
 }
 
 .btn-add{
@@ -45,7 +45,31 @@
     right:3%;
 }
 
+@media (max-width:800px){
+    .game-helper{
+        bottom:0;
+        left:0;
+        right:0;
+        
+    }
+}
+
+.dark-overlay{
+    background-color:rgba(0,0,0,0.5);
+    position:absolute;
+    top:0;
+    left:0;
+    height:100vh;
+    width:100vw;
+    max-width:100%;
+}
+
+.hide{
+    display:none;
+}
+
 .blinking-button{
+    
     animation: blinking-button 3s infinite;
 }
 
@@ -87,5 +111,17 @@ app-player, .card-deck{
 
     100%{
         transform: scale(1.0) translateX(-200px) rotate(-20deg);
+    }
+}
+
+@media (min-width:720px){
+    .hide-mobile{
+        display:none;
+    }
+}
+
+@media(max-width:720px){
+    .hide-desktop{
+        display:none;
     }
 }

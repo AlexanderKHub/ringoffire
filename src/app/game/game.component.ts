@@ -2,12 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { Game } from '../models/game';
-import { Firestore, collectionData, collection, doc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { setDoc } from '@firebase/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
@@ -80,6 +75,7 @@ export class GameComponent implements OnInit {
         this.game.players.push(name);
         this.game.playerImages.push('blank-profile.png');
         document.getElementById('add-player-button')?.classList.remove('blinking-button');
+        document.getElementById('dark-overlay')?.classList.add('hide');
         this.updateGameToDB();
       }
     });
@@ -101,6 +97,7 @@ export class GameComponent implements OnInit {
       }, 2000); 
     }  else{
         document.getElementById('add-player-button')?.classList.add('blinking-button');
+        document.getElementById('dark-overlay')?.classList.remove('hide');
     }
   }
 

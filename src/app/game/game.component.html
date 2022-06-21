@@ -1,6 +1,10 @@
-<app-player class="player-layout" *ngFor="let player of game.players; let i = index" [ngStyle]="{'top.px': 100 + (i * 120)}" 
+<app-player class="player-layout hide-desktop" *ngFor="let player of game.players; let i = index" [ngStyle]="{'top.px': 100 + (i * 120), 'right.px':0}" 
     [name]="player" [profileImage]="game.playerImages[i]" [playerActive]="i == game.currentPlayer" (click)="editUser(i)">
 </app-player>
+
+<app-player-mobile class="player-layout hide-mobile" *ngFor="let player of game.players; let i = index" [ngStyle]="{'left.px': 90 + (i * 70) }" 
+    [name]="player" [profileImage]="game.playerImages[i]" [playerActive]="i == game.currentPlayer" (click)="editUser(i)">
+</app-player-mobile>
 
 
 <div class="playfield">
@@ -21,11 +25,15 @@
     </div>
 </div>
 
+<div id="dark-overlay" class="dark-overlay hide">
+
+</div>
+
 
 <button id="add-player-button" mat-fab color="primary" class="btn-add" (click)="openDialog()">
     <mat-icon>add</mat-icon>
 </button>
 
-<app-game-guide [card]="game.currentCard" class="game-helper">
-
+<app-game-guide
+    [card]="game.currentCard" class="game-helper">
 </app-game-guide>

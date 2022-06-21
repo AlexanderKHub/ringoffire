@@ -25,3 +25,19 @@
         width:30%;
     }
 }
+
+@media (max-width:960px){
+    .startscreen{
+        img{
+            object-fit:cover;
+        }
+    }
+}
+
+@media(max-width:800px){
+    .start-game-label{
+        img{
+            width:300px;
+        }
+    }
+}
